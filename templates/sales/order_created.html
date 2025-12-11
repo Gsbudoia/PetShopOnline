@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="card shadow-lg p-5">
+        <div class="card-body">
+            <h1 class="text-success display-4">🎉 Compra Realizada!</h1>
+            <p class="lead mt-3">Obrigado pela preferência, <strong>{{ user.first_name }}</strong>.</p>
+            
+            <hr>
+            
+            <p>O número do seu pedido é: <strong>#{{ order.id }}</strong></p>
+            <p class="text-muted">Você pode ver os detalhes no seu histórico ou falar com o vendedor.</p>
+
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-primary">Voltar para o Início</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

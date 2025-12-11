@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Seu Carrinho de Compras</h2>
+
+    {% if cart.cart %}
+        <table class="table table-striped mt-3 align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Preço Unit.</th>
+                    <th>Total</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>R$ {{ item.price }}</td>
+                    <td>R$ {{ item.total_price }}</td>
+                    <td>
+                        <a href="{% url 'cart_remove' item.product.id %}" class="btn btn-sm btn-danger">
+                            Remover
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold fs-5">
+                    <td colspan="3" class="text-end">Total Geral:</td>
+                    <td colspan="2">R$ {{ cart.get_total_price }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'product_list' %}" class="btn btn-secondary">⬅ Continuar Comprando</a>
+            
+            <form action="{% url 'order_create' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-lg">✅ Finalizar Pedido</button>
+            </form>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info mt-4">
+            Seu carrinho está vazio. 
+            <a href="{% url 'product_list' %}" class="alert-link">Ir para a loja</a>.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">🛒 Nossa Loja</h2>
+
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">Estoque: {{ product.stock_quantity }} unidades</p>
+                        
+                        <h4 class="text-success mt-auto">R$ {{ product.price }}</h4>
+                        
+                        {% if product.stock_quantity > 0 %}
+                            <a href="{% url 'cart_add' product.id %}" class="btn btn-primary mt-2">
+                                🛍️ Adicionar ao Carrinho
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary mt-2" disabled>Esgotado</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    Nenhum produto cadastrado na loja no momento.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

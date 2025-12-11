@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Serviço 1: Sua Aplicação Django
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=petshop_db
+      - DB_USER=petuser
+      - DB_PASSWORD=petpassword
+      - DB_HOST=db
+      - DB_PORT=5432
+
+  # Serviço 2: O Banco de Dados (PostgreSQL)
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=petshop_db
+      - POSTGRES_USER=petuser
+      - POSTGRES_PASSWORD=petpassword
+
+volumes:
+  postgres_data:

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron text-center bg-light p-5 rounded mt-4">
+    <h1 class="display-4">Olá, {{ user.first_name|default:user.username }}! 👋</h1>
+    <p class="lead">Bem-vindo ao seu painel do PetShop.</p>
+    <hr class="my-4">
+    <p>O que você gostaria de fazer hoje?</p>
+</div>
+
+<div class="row mt-4">
+    
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 border-primary">
+            <div class="card-body text-center">
+                <h3 class="display-6">📅</h3>
+                <h5 class="card-title">Agendar Serviço</h5>
+                <p class="card-text">Marque um banho ou tosa para o seu melhor amigo.</p>
+                <a href="{% url 'schedule_service' %}" class="btn btn-primary w-100">Agendar Agora</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 border-success">
+            <div class="card-body text-center">
+                <h3 class="display-6">🐕</h3>
+                <h5 class="card-title">Meus Pets</h5>
+                <p class="card-text">Veja os pets cadastrados ou adicione um novo.</p>
+                <a href="{% url 'my_pets' %}" class="btn btn-success w-100">Gerenciar Pets</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 border-warning">
+            <div class="card-body text-center">
+                <h3 class="display-6">🛒</h3>
+                <h5 class="card-title">Loja Virtual</h5>
+                <p class="card-text">Compre ração, brinquedos e acessórios.</p>
+                <a href="{% url 'product_list' %}" class="btn btn-warning w-100">Ir para a Loja</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% if user.is_staff %}
+<div class="row mt-5">
+    <div class="col-12">
+        <h4 class="text-muted">Área Administrativa</h4>
+        <div class="card">
+            <div class="card-body">
+                <a href="/admin/" class="btn btn-outline-dark">Acessar Painel Admin</a>
+                <a href="{% url 'appointment_list' %}" class="btn btn-outline-dark">Ver Todos Agendamentos</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

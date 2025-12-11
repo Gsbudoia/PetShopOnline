@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus Pets{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-7">
+        <h2 class="mb-4">🐾 Meus Animais</h2>
+        <div class="row">
+            {% for pet in pets %}
+            <div class="col-md-6 mb-3">
+                <div class="card border-info h-100">
+                    <div class="card-body text-center">
+                        {% if pet.photo %}
+                            <img src="{{ pet.photo.url }}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px; font-size: 40px;">🐶</div>
+                        {% endif %}
+                        
+                        <h4 class="card-title">{{ pet.name }}</h4>
+                        <p class="text-muted">{{ pet.breed }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <div class="alert alert-warning">Você ainda não cadastrou nenhum pet.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">+ Adicionar Novo Pet</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-success w-100">Salvar Pet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

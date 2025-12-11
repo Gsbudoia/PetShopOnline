@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow mt-5">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">📅 Agendar Serviço</h4>
+            </div>
+            <div class="card-body">
+                
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Qual Pet será atendido?</label>
+                        {{ form.pet }}
+                        {% if form.pet.errors %}
+                            <div class="text-danger small">{{ form.pet.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Serviço desejado:</label>
+                        {{ form.service }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Data:</label>
+                            {{ form.escolha_data }} {% if form.escolha_data.errors %}
+                                <div class="text-danger small">{{ form.escolha_data.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Horário:</label>
+                            {{ form.escolha_hora }} {% if form.escolha_hora.errors %}
+                                <div class="text-danger small">{{ form.escolha_hora.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Observações (opcional):</label>
+                        {{ form.notes }}
+                    </div>
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">Confirmar Agendamento</button>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary">Cancelar</a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

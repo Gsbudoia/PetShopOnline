@@ -26,7 +26,6 @@ SECRET_KEY = 'django-insecure-_x-$0t=s73yqylobesebrtdbpo_^c@v^^z=f1y8**4foh1b3tc
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://petshoponline.onrender.com']
 
 
 # Application definition
@@ -140,3 +139,7 @@ LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = '/accounts/login/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+CSRF_TRUSTED_ORIGINS = ['https://petshoponline.onrender.com']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True

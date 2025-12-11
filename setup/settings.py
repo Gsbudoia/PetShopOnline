@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-_x-$0t=s73yqylobesebrtdbpo_^c@v^^z=f1y8**4foh1b3tc
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://petshoponline.onrender.com']
 
 
 # Application definition

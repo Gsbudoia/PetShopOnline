@@ -125,7 +125,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+# ONDE o Django vai juntar todos os arquivos estáticos antes de subir
+import os
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Configura o Whitenoise para compactar e servir os arquivos
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

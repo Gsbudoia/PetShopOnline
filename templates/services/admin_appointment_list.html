@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">📅 Agenda Geral (Admin)</h2>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Data/Hora</th>
+                <th>Cliente</th>
+                <th>Pet</th>
+                <th>Serviço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app in appointments %}
+            <tr>
+                <td>{{ app.date|date:"d/m/Y H:i" }}</td>
+                <td>{{ app.pet.owner.username }}</td> <td>{{ app.pet.name }}</td>
+                <td>{{ app.service.name }}</td>
+                <td>
+                    <form action="{% url 'admin_appointment_delete' app.pk %}" method="post" onsubmit="return confirm('Tem certeza que deseja cancelar este agendamento?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">Nenhum agendamento encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

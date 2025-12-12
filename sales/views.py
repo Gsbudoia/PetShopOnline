@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Product, Sale, SaleItem
-from .cart import Cart # Importa a classe que acabamos de 
+from .cart import Cart
 from django.views.decorators.http import require_POST
+from django.contrib.admin.views.decorators import staff_member_required
 
 # --- LISTA DE PRODUTOS (VITRINE) ---
 def product_list(request):
@@ -79,3 +80,21 @@ def cart_update(request, product_id):
         cart.remove(product)
         
     return redirect('cart_detail')
+
+@staff_member_required
+def admin_stock_list(request):
+    # Pega todos os produtos
+    products = Product.objects.all().order_by('name')
+    
+    # Se o admin clicar em "Salvar" para atualizar estoque rápido
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')
+        new_quantity = request.POST.get('new_quantity')
+        
+        product = get_object_or_404(Product, id=product_id)
+        product.stock_quantity = new_quantity
+        product.save()
+        messages.success(request, f'Estoque de {product.name} atualizado!')
+        return redirect('admin_stock_list')
+
+    return render(request, 'sales/admin_stock_list.html', {'products': products})

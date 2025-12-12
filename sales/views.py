@@ -60,3 +60,22 @@ def order_create(request):
         return render(request, 'sales/order_created.html', {'order': order})
     
     return redirect('cart_detail')
+
+def cart_update(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Pega o número que veio do formulário
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except ValueError:
+        quantity = 1
+    
+    # Se o cliente colocou 0, removemos o produto. Se for > 0, atualizamos.
+    if quantity > 0:
+        # update_quantity=True força o carrinho a substituir o valor (ex: de 5 vira 3)
+        cart.add(product=product, quantity=quantity, update_quantity=True)
+    else:
+        cart.remove(product)
+        
+    return redirect('cart_detail')

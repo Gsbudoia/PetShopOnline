@@ -9,8 +9,7 @@
             <thead class="table-dark">
                 <tr>
                     <th>Produto</th>
-                    <th>Qtd</th>
-                    <th>Preço Unit.</th>
+                    <th style="width: 150px;">Qtd</th> <th>Preço Unit.</th>
                     <th>Total</th>
                     <th>Ação</th>
                 </tr>
@@ -19,7 +18,19 @@
                 {% for item in cart %}
                 <tr>
                     <td>{{ item.product.name }}</td>
-                    <td>{{ item.quantity }}</td>
+
+                    <td>
+                        <form action="{% url 'cart_update' item.product.id %}" method="post" class="d-flex">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                   min="1" max="{{ item.product.stock_quantity }}" 
+                                   class="form-control form-control-sm me-2">
+                            
+                            <button type="submit" class="btn btn-sm btn-outline-primary" title="Atualizar quantidade">
+                                ↻
+                            </button>
+                        </form>
+                    </td>
                     <td>R$ {{ item.price }}</td>
                     <td>R$ {{ item.total_price }}</td>
                     <td>

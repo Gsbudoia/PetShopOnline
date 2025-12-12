@@ -11,6 +11,10 @@ def rodar(comando):
 
 print("=== INICIANDO AUTOMACAO ===")
 
+print("--> 0. Coletando arquivos estáticos (CSS do Admin)...")
+rodar("python manage.py collectstatic --noinput")
+
+
 # 1. Cria as tabelas no banco
 rodar("python manage.py migrate")
 

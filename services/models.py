@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 class ServiceType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Serviço")
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    # NOVO CAMPO: Duração em minutos (ex: 30, 60)
+    # Duração em minutos (ex: 30, 60)
     duration = models.IntegerField(verbose_name="Duração (minutos)", default=30)
 
     def __str__(self):
@@ -15,8 +15,6 @@ class ServiceType(models.Model):
 
 class Appointment(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE)
-    # Mudei de ManyToMany para ForeignKey para simplificar a lógica inicial (1 serviço por vez)
-    # Se quiser combos (Banho + Tosa), crie um ServiceType chamado "Banho Completo"
     service = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True) 
     
     date = models.DateTimeField(verbose_name="Data e Hora")
@@ -28,7 +26,7 @@ class Appointment(models.Model):
 
     # Lógica de validação (Não deixa salvar se tiver conflito)
     def clean(self):
-        if not self.service:
+        if not self.service or not self.date:
             return
 
         # Calcula a hora que termina esse agendamento
@@ -42,9 +40,13 @@ class Appointment(models.Model):
         ).exclude(id=self.id) # Não conta ele mesmo se for edição
 
         for appointment in conflicts:
-            # Calcula o fim do agendamento existente
-            existing_end = appointment.date + datetime.timedelta(minutes=appointment.service.duration)
+            # Se encontrar um agendamento antigo bugado sem serviço, ignora
+            if not appointment.service:
+                continue
             
+            # Calcula o fim do agendamento existente
+            existing_end = appointment.date + datetime.timedelta(minutes=appointment.service.duration)   
+             
             # Verifica sobreposição real
             if (start_time < existing_end) and (end_time > appointment.date):
                 raise ValidationError(f"Horário indisponível. Já existe um agendamento entre {appointment.date.strftime('%H:%M')} e {existing_end.strftime('%H:%M')}.")

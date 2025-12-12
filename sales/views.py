@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Product, Sale, SaleItem
-from .cart import Cart # Importa a classe que acabamos de criar
+from .cart import Cart # Importa a classe que acabamos de 
+from django.views.decorators.http import require_POST
 
 # --- LISTA DE PRODUTOS (VITRINE) ---
 def product_list(request):
@@ -10,9 +11,15 @@ def product_list(request):
 
 # --- ADICIONAR AO CARRINHO ---
 def cart_add(request, product_id):
-    cart = Cart(request) # Inicializa o carrinho
+    cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
-    cart.add(product=product, quantity=1)
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except ValueError:
+        quantity = 1        
+    # Adiciona ao carrinho com a quantidade escolhida
+    cart.add(product=product, quantity=quantity)
+    
     return redirect('cart_detail')
 
 # --- REMOVER DO CARRINHO ---

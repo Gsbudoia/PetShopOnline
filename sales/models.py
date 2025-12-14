@@ -7,6 +7,8 @@ from django.conf import settings # Para pegar o usuário logado
 
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name="Nome")
+    description = models.TextField(blank=True, null=True, verbose_name="Descrição")
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Imagem")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Preço")
     stock_quantity = models.IntegerField(verbose_name="Quantidade em Estoque")
     is_active = models.BooleanField(default=True, verbose_name="Ativo")

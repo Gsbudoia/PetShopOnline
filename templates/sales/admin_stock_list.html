@@ -2,7 +2,12 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="mb-4">📋 Controle de Estoque</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">📋 Controle de Estoque</h2>
+        <a href="{% url 'admin_product_add' %}" class="btn btn-success">
+            + Novo Produto
+        </a>
+    </div>
     
     <div class="table-responsive">
         <table class="table table-hover table-bordered">
@@ -11,31 +16,47 @@
                     <th>Produto</th>
                     <th>Preço</th>
                     <th style="width: 200px;">Estoque Atual</th>
-                    <th>Ação</th>
+                    <th style="width: 150px;" class="text-center">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 {% for product in products %}
                 <tr class="{% if product.stock_quantity == 0 %}table-danger{% elif product.stock_quantity < 5 %}table-warning{% endif %}">
+                    
                     <td class="align-middle">
                         <strong>{{ product.name }}</strong>
                         {% if product.stock_quantity == 0 %}
-                            <span class="badge bg-danger">Esgotado</span>
+                            <span class="badge bg-danger ms-2">Esgotado</span>
+                        {% endif %}
+                        {% if not product.is_active %}
+                            <span class="badge bg-secondary ms-2">Inativo</span>
                         {% endif %}
                     </td>
+
                     <td class="align-middle">R$ {{ product.price }}</td>
                     
                     <td class="align-middle">
-                        <form action="" method="post" class="d-flex">
+                        <form action="{% url 'admin_stock_list' %}" method="post" class="d-flex">
                             {% csrf_token %}
                             <input type="hidden" name="product_id" value="{{ product.id }}">
                             <input type="number" name="new_quantity" value="{{ product.stock_quantity }}" class="form-control" min="0">
-                            <button type="submit" class="btn btn-primary btn-sm ms-2">💾</button>
+                            <button type="submit" class="btn btn-primary btn-sm ms-2" title="Salvar Estoque">💾</button>
                         </form>
                     </td>
                     
                     <td class="align-middle text-center">
-                        <a href="/admin/sales/product/{{ product.id }}/change/" target="_blank" class="btn btn-sm btn-outline-secondary">Editar Detalhes</a>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="/admin/sales/product/{{ product.id }}/change/" target="_blank" class="btn btn-sm btn-outline-secondary" title="Editar Detalhes">
+                                ✏️
+                            </a>
+
+                            <form action="{% url 'admin_product_delete' product.id %}" method="post" onsubmit="return confirm('Tem certeza que deseja EXCLUIR o produto {{ product.name }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" title="Excluir Produto">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

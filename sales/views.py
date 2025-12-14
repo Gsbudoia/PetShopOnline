@@ -5,6 +5,7 @@ from django.contrib import messages
 from .cart import Cart
 from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
+from .forms import ProductForm
 
 # --- LISTA DE PRODUTOS (VITRINE) ---
 def product_list(request):
@@ -99,3 +100,29 @@ def admin_stock_list(request):
         return redirect('admin_stock_list')
 
     return render(request, 'sales/admin_stock_list.html', {'products': products})
+
+# --- ADICIONAR PRODUTO ---
+@staff_member_required
+def admin_product_add(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Produto cadastrado com sucesso!')
+            return redirect('admin_stock_list')
+    else:
+        form = ProductForm()
+
+    return render(request, 'sales/admin_product_form.html', {'form': form})
+
+# --- REMOVER PRODUTO ---
+@staff_member_required
+def admin_product_delete(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    if request.method == 'POST':
+        product.delete()
+        messages.success(request, 'Produto removido do estoque.')
+        return redirect('admin_stock_list')
+        
+    return redirect('admin_stock_list')

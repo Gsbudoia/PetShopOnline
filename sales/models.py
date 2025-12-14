@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-# Importando modelos de outros apps (Requisito de integração entre módulos)
+
 from core.models import Customer
 from django.conf import settings # Para pegar o usuário logado
 
@@ -47,7 +47,7 @@ class SaleItem(models.Model):
         return self.quantity * self.unit_price
 
     def save(self, *args, **kwargs):
-        # Requisito: Validação de Dados (Regra de Negócio)
+        # Requisito: Validação de Dados
         if not self.pk: # Apenas na criação
             if self.product.stock_quantity < self.quantity:
                 raise ValidationError(f"Estoque insuficiente para {self.product.name}. Disponível: {self.product.stock_quantity}")

@@ -146,7 +146,7 @@ LOGOUT_REDIRECT_URL = 'login'
 # Para onde o sistema manda quem tenta acessar página bloqueada
 LOGIN_URL = '/accounts/login/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'    # Simula envio de e-mail imprimindo no console
 CSRF_TRUSTED_ORIGINS = ['https://petshoponline.onrender.com']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_COOKIE_SECURE = True

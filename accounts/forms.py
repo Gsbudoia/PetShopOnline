@@ -20,11 +20,11 @@ class ClienteSignupForm(UserCreationForm):
             field.widget.attrs['placeholder'] = field.label
 
     def save(self, commit=True):
-        # 1. Salva os dados no objeto User (na memória)
+        # Salva os dados no objeto User (na memória)
         user = super().save(commit=False)
         user.email = self.cleaned_data['email']
         
-        # Opcional: Usar o email como username para evitar erro de duplicidade
+        # Usar o email como username para evitar erro de duplicidade
         user.username = self.cleaned_data['email'] 
         
         if commit:

@@ -25,7 +25,6 @@ HORARIOS_DISPONIVEIS = [
 ]
 
 class AppointmentForm(forms.ModelForm):
-    # Campos "Virtuais" (Não existem no banco, usamos só pro formulário)
     escolha_data = forms.DateField(
         label="Data do Agendamento",
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
@@ -38,7 +37,6 @@ class AppointmentForm(forms.ModelForm):
 
     class Meta:
         model = Appointment
-        # Note que removemos o campo 'date' original daqui, pois vamos construí-lo manualmente
         fields = ['pet', 'service', 'notes'] 
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 2, 'class': 'form-control'}),
@@ -50,7 +48,7 @@ class AppointmentForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        # 1. Filtra os pets do usuário
+        # Filtrar os pets do usuário
         if user:
             try:
                 customer = user.customer
@@ -58,7 +56,7 @@ class AppointmentForm(forms.ModelForm):
             except Customer.DoesNotExist:
                 self.fields['pet'].queryset = Pet.objects.none()
 
-        # 2. Bloqueia datas passadas no HTML (Visual)
+        # Bloqueia datas passadas no HTML (Visual)
         hoje = timezone.now().date()
         self.fields['escolha_data'].widget.attrs['min'] = hoje
 
@@ -69,16 +67,16 @@ class AppointmentForm(forms.ModelForm):
         service = cleaned_data.get('service')
 
         if not data or not hora_str or not service:
-            return # Se faltar campo, o Django já mostra erro nativo
+            return
 
-        # --- VALIDAÇÃO 1: NÃO PODE SER PASSADO ---
+        # --- NÃO PODE SER PASSADO ---
         # Converte a string de hora '09:00' para números
         hora, minuto = map(int, hora_str.split(':'))
         
         # Cria o objeto datetime completo
         data_hora_agendamento = datetime.datetime.combine(data, datetime.time(hora, minuto))
         
-        # Torna a data "consciente" de fuso horário (importante pro Django não dar erro)
+        # Torna a data "consciente" de fuso horário (**** importante para Django não dar erro)
         if timezone.is_naive(data_hora_agendamento):
             data_hora_agendamento = timezone.make_aware(data_hora_agendamento)
 
@@ -93,18 +91,17 @@ class AppointmentForm(forms.ModelForm):
         conflitos = Appointment.objects.filter(
             date__lt=fim_servico,
             date__gt=data_hora_agendamento - datetime.timedelta(minutes=120) 
-            # Dica: Otimização para não buscar no banco inteiro, busca só perto do horário
         )
 
         for agendamento in conflitos:
-            # Calcula o fim do agendamento que JÁ existe no banco
+            # Calcula o fim do agendamento que ja tem no no banco
             fim_existente = agendamento.date + datetime.timedelta(minutes=agendamento.service.duration)
             
             # Se o horário se sobrepõe
             if (data_hora_agendamento < fim_existente) and (fim_servico > agendamento.date):
                 raise forms.ValidationError(f"Desculpe, o horário das {hora_str} já está ocupado por outro pet.")
 
-        # Se passou por tudo, salvamos a data completa no formulário para usar no save()
+        # Salva a data completa no formulário para usar no save()
         self.cleaned_data['final_datetime'] = data_hora_agendamento
         return cleaned_data
 

@@ -2,9 +2,9 @@ from django.db import models
 from django.conf import settings # Importa o usuário
 
 class Customer(models.Model):
+    
     #Liga o cadastro ao Login do usuário
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
-    
     name = models.CharField(max_length=100, verbose_name="Nome")
     email = models.EmailField(blank=True, verbose_name="E-mail")
     phone = models.CharField(max_length=20, verbose_name="Telefone")

@@ -9,7 +9,7 @@ def signup(request):
         
         if form.is_valid():
             # Se deu tudo certo
-            print("----> FORMULÁRIO VÁLIDO! SALVANDO...") # Espião 1
+            print("----> FORMULÁRIO VÁLIDO! SALVANDO...") 
             user = form.save()
             Customer.objects.create(
                 user=user,
@@ -21,7 +21,7 @@ def signup(request):
             return redirect('home')
         else:
             # Se deu erro
-            print("----> OPA! ERRO NO FORMULÁRIO:") # Espião 2
+            print("----> OPA! ERRO NO FORMULÁRIO:")
             print(form.errors) # <--- ISSO VAI MOSTRAR O ERRO NO TERMINAL
             
     else:

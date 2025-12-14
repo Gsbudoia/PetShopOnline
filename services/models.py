@@ -37,7 +37,7 @@ class Appointment(models.Model):
         conflicts = Appointment.objects.filter(
             date__lt=end_time,           # Começa antes deste terminar
             date__gt=start_time - datetime.timedelta(minutes=120) # Otimização de busca
-        ).exclude(id=self.id) # Não conta ele mesmo se for edição
+        ).exclude(id=self.id)
 
         for appointment in conflicts:
             # Se encontrar um agendamento antigo bugado sem serviço, ignora

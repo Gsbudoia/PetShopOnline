@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Product, Sale, SaleItem
+from django.contrib import messages
 from .cart import Cart
 from django.views.decorators.http import require_POST
 from django.contrib.admin.views.decorators import staff_member_required
@@ -40,14 +41,14 @@ def cart_detail(request):
 def order_create(request):
     cart = Cart(request)
     if request.method == 'POST':
-        # 1. Cria a Venda no Banco
+        # Cria a Venda no Banco
         order = Sale.objects.create(
             customer=request.user.customer,
-            seller=request.user, # Num e-commerce puro, o seller seria o Admin ou null
+            seller=request.user, 
             is_closed=True
         )
         
-        # 2. Transfere itens do Carrinho (Sessão) para o Banco (SaleItem)
+        #Transfere itens do Carrinho (Sessão) para o Banco (SaleItem)
         for item in cart:
             SaleItem.objects.create(
                 sale=order,
@@ -56,7 +57,7 @@ def order_create(request):
                 quantity=item['quantity']
             )
             
-        # 3. Limpa o carrinho e avisa
+        # Limpa o carrinho e avisa
         cart.clear()
         return render(request, 'sales/order_created.html', {'order': order})
     
@@ -83,16 +84,16 @@ def cart_update(request, product_id):
 
 @staff_member_required
 def admin_stock_list(request):
-    # Pega todos os produtos
     products = Product.objects.all().order_by('name')
     
-    # Se o admin clicar em "Salvar" para atualizar estoque rápido
     if request.method == 'POST':
         product_id = request.POST.get('product_id')
         new_quantity = request.POST.get('new_quantity')
         
         product = get_object_or_404(Product, id=product_id)
-        product.stock_quantity = new_quantity
+        
+        product.stock_quantity = int(new_quantity) 
+        
         product.save()
         messages.success(request, f'Estoque de {product.name} atualizado!')
         return redirect('admin_stock_list')

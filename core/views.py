@@ -4,17 +4,15 @@ from django.contrib import messages
 from .models import Customer, Pet
 from .forms import CustomerForm, PetForm
 
-# --- VIEW 1: PÁGINA INICIAL (DASHBOARD) ---
-# Esta era a função que estava faltando!
+# --- PÁGINA INICIAL (DASHBOARD) ---
 @login_required
 def index(request):
     return render(request, 'index.html')
 
-# --- VIEW 2: MEUS PETS (Para o Cliente Final) ---
+# --- MEUS PETS ---
 @login_required
 def my_pets(request):
-    # Tenta pegar o Customer ligado ao User, ou cria se não existir
-    customer, created = Customer.objects.get_or_create(
+    customer, created = Customer.objects.get_or_create(  # Tenta pegar o Customer ligado ao User, ou cria se não existir
         user=request.user,
         defaults={'name': request.user.username, 'email': request.user.email}
     )
@@ -34,7 +32,7 @@ def my_pets(request):
     
     return render(request, 'core/my_pets.html', {'pets': pets, 'form': form})
 
-# --- VIEW 3: CADASTRO COMPLETO (Para Recepção/Admin) ---
+# --- CADASTRO COMPLETO (Para Recepção/Admin) ---
 @login_required
 def customer_add(request):
     if request.method == 'POST':
